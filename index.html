@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FT 04 — DPO and Cousins</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-card: #0d1117;
+            --bg-code: #161b22;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #76B900;
+            --accent-dim: #76B90044;
+            --accent-glow: #76B90033;
+            --border: #21262d;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --font-body: 'Inter', sans-serif;
+            --max-width: 900px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 17px;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .hero > * { position: relative; z-index: 1; }
+        .series-label {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        .hero h1 .accent { color: var(--accent); }
+        .hero .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin-bottom: 2rem;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+            white-space: nowrap;
+        }
+        .pipeline {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+            max-width: var(--max-width);
+        }
+        .pipeline-step {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 0.3rem 0.7rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .pipeline-arrow { color: var(--accent); font-size: 0.9rem; font-weight: 700; }
+        .slide {
+            min-height: 100vh;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide-number {
+            font-family: var(--font-display);
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--accent-dim);
+            position: absolute;
+            top: 2rem;
+            right: 1.5rem;
+            line-height: 1;
+            user-select: none;
+        }
+        .slide h2 {
+            font-family: var(--font-display);
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            line-height: 1.25;
+        }
+        .slide h3 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .slide p { margin-bottom: 1rem; color: var(--text-secondary); }
+        .slide p strong { color: var(--text-primary); }
+        .slide ul, .slide ol { margin-bottom: 1rem; padding-left: 1.5rem; color: var(--text-secondary); }
+        .slide li { margin-bottom: 0.4rem; }
+        .slide li strong { color: var(--text-primary); }
+        .slide code {
+            font-family: var(--font-mono);
+            font-size: 0.88em;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            padding: 0.05rem 0.35rem;
+            border-radius: 3px;
+            color: #c9d1d9;
+        }
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.25rem 0;
+            overflow: hidden;
+        }
+        .code-header {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent);
+            background: rgba(118, 185, 0, 0.08);
+            padding: 0.4rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .code-block pre { margin: 0; padding: 1rem; overflow-x: auto; }
+        .code-block code {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #c9d1d9;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+        .kw { color: #ff7b72; }
+        .fn { color: #d2a8ff; }
+        .str { color: #a5d6ff; }
+        .cm { color: #8b949e; font-style: italic; }
+        .num { color: #79c0ff; }
+        .type { color: #ffa657; }
+        .dir { color: #ff7b72; }
+        .mac { color: #ffa657; }
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1.25rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th {
+            background: var(--bg-code);
+            color: var(--accent);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-display);
+            white-space: nowrap;
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) td { background: rgba(13, 17, 23, 0.5); }
+        .diagram-flow {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .diagram-box {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            text-align: center;
+            white-space: nowrap;
+        }
+        .diagram-box.accent { border-color: var(--accent); color: var(--accent); background: rgba(118, 185, 0, 0.08); }
+        .diagram-box.dim { color: var(--text-secondary); border-color: var(--border); }
+        .diagram-arrow { color: var(--accent); font-size: 1.3rem; font-weight: 700; }
+        .diagram-vertical {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .diagram-vertical .diagram-arrow { font-size: 1.1rem; }
+        .hierarchy {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .hierarchy-level { display: flex; align-items: center; gap: 0.75rem; }
+        .hierarchy-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            min-width: 80px;
+            text-align: right;
+        }
+        .hierarchy-items { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .hierarchy-item {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .hierarchy-item.accent { border-color: var(--accent); color: var(--accent); background: rgba(118, 185, 0, 0.08); }
+        .diagram-grid {
+            display: grid;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .diagram-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+        .diagram-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .diagram-panel {
+            padding: 1rem;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        .diagram-panel.accent-border { border-left: 3px solid var(--accent); }
+        .diagram-panel h4 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .diagram-panel p, .diagram-panel ul { font-size: 0.85rem; }
+        .callout {
+            background: var(--bg-card);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+        }
+        .callout p { margin-bottom: 0; }
+        .callout p + p { margin-top: 0.5rem; }
+        .callout .callout-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.3rem;
+        }
+        .contents-list { list-style: none; padding-left: 0; counter-reset: contents; }
+        .contents-list li {
+            counter-increment: contents;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .contents-list li:last-child { border-bottom: none; }
+        .contents-list li::before {
+            content: counter(contents, decimal-leading-zero);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            min-width: 2rem;
+        }
+        .contents-list a { color: var(--text-primary); text-decoration: none; transition: color 0.2s; }
+        .contents-list a:hover { color: var(--accent); }
+        .footer {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .canvas-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.25rem 0;
+            overflow-x: auto;
+        }
+        .canvas-wrap canvas, .canvas-wrap svg { display: block; margin: 0 auto; max-width: 100%; }
+        .badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            padding: 0.1rem 0.45rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            vertical-align: middle;
+            margin-left: 0.3rem;
+        }
+        .badge.ok    { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+        .badge.warn  { border-color: #ffa657; color: #ffa657; background: rgba(255,166,87,0.08); }
+        .badge.bad   { border-color: #ff7b72; color: #ff7b72; background: rgba(255,123,114,0.08); }
+        @media (max-width: 640px) {
+            .slide { padding: 3rem 1rem; min-height: auto; }
+            .slide-number { font-size: 3rem; top: 1.5rem; right: 1rem; }
+            .slide h2 { font-size: 1.5rem; }
+            .diagram-grid.cols-2, .diagram-grid.cols-3 { grid-template-columns: 1fr; }
+            .pipeline { gap: 0.15rem; }
+            .pipeline-step { font-size: 0.6rem; padding: 0.2rem 0.4rem; }
+            .hero h1 { font-size: 1.8rem; }
+            table { font-size: 0.78rem; }
+        }
+    </style>
+</head>
+<body>
+<header class="hero">
+    <div class="series-label">Fine-Tuning &amp; PEFT Series &mdash; Presentation 04</div>
+    <h1>DPO and <span class="accent">Its Cousins</span></h1>
+    <p class="subtitle">DPO, IPO, KTO, ORPO, GRPO &mdash; what each fixes, when each wins, and a decision tree for choosing the right one for your use case.</p>
+
+    <div class="tags">
+        <span class="tag">DPO</span>
+        <span class="tag">IPO</span>
+        <span class="tag">KTO</span>
+        <span class="tag">ORPO</span>
+        <span class="tag">GRPO</span>
+        <span class="tag">Implicit Reward</span>
+        <span class="tag">Preference Optimisation</span>
+        <span class="tag">DeepSeek-R1</span>
+    </div>
+
+    <div class="pipeline">
+        <span class="pipeline-step">SFT Model</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">Pref Pairs</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">DPO Loss</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">No RM Needed</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">No Rollouts</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">Aligned Policy</span>
+    </div>
+</header>
+
+<section class="slide" id="slide-00">
+    <div class="slide-number">00</div>
+    <h2>Topics We'll Cover</h2>
+    <ul class="contents-list">
+        <li><a href="#slide-01">Why DPO &mdash; Skipping the Reward Model</a></li>
+        <li><a href="#slide-02">DPO Derivation &mdash; Implicit Reward, Reference Model</a></li>
+        <li><a href="#slide-03">DPO Loss, Beta, Positive/Negative Pairs</a></li>
+        <li><a href="#slide-04">IPO &mdash; Fixing Preference Saturation</a></li>
+        <li><a href="#slide-05">KTO &mdash; Kahneman-Tversky, No Pairs Needed</a></li>
+        <li><a href="#slide-06">ORPO &mdash; No Reference Model</a></li>
+        <li><a href="#slide-07">GRPO &mdash; DeepSeek-R1's Group-Relative Variant</a></li>
+        <li><a href="#slide-08">Choosing &mdash; Decision Tree</a></li>
+        <li><a href="#slide-09">What to Take Away</a></li>
+    </ul>
+</section>
+
+<section class="slide" id="slide-01">
+    <div class="slide-number">01</div>
+    <h2>Why DPO &mdash; Skipping the Reward Model</h2>
+    <p>PPO RLHF requires three training stages: SFT, reward model training, and RL fine-tuning. Each stage introduces a new failure mode. The reward model is the most fragile piece: it must generalise well beyond its training distribution, and even small calibration errors are amplified by the RL optimisation loop.</p>
+
+    <p>Rafailov et al. (2023) &mdash; <em>Direct Preference Optimisation: Your Language Model Is Secretly a Reward Model</em> &mdash; showed you can mathematically re-derive the optimal RLHF policy without ever training a separate reward model. The key insight is that under the Bradley-Terry preference model, the optimal policy <em>implicitly encodes</em> the reward function &mdash; and you can optimise directly for the optimal policy using a classification-like loss on the preference data.</p>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel accent-border">
+            <h4>PPO RLHF (three stages)</h4>
+            <p>1. Train SFT model &pi;<sub>SFT</sub></p>
+            <p>2. Collect preference pairs (y<sub>w</sub>, y<sub>l</sub>)</p>
+            <p>3. Train reward model r<sub>&phi;</sub></p>
+            <p>4. PPO: optimise &pi;<sub>&theta;</sub> with r<sub>&phi;</sub> + KL(&pi;<sub>&theta;</sub> || &pi;<sub>SFT</sub>)</p>
+            <p><strong>Four model copies in VRAM simultaneously</strong></p>
+        </div>
+        <div class="diagram-panel accent-border">
+            <h4>DPO (two stages)</h4>
+            <p>1. Train SFT model &pi;<sub>SFT</sub></p>
+            <p>2. Collect preference pairs (y<sub>w</sub>, y<sub>l</sub>)</p>
+            <p>3. DPO: optimise &pi;<sub>&theta;</sub> directly from pairs</p>
+            <p>&nbsp;</p>
+            <p><strong>Two model copies: &pi;<sub>&theta;</sub> (training) + &pi;<sub>ref</sub> (frozen)</strong></p>
+        </div>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">DPO quality vs PPO</div>
+        <p>On standard benchmarks (MT-Bench, AlpacaEval 2.0) DPO matches or slightly trails well-tuned PPO on single-turn instruction following. PPO retains an advantage on tasks requiring online exploration or non-differentiable rewards (code execution, math). For the vast majority of chat-style alignment work, DPO is the simpler and cheaper choice.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-02">
+    <div class="slide-number">02</div>
+    <h2>DPO Derivation &mdash; Implicit Reward, Reference Model</h2>
+    <p>Starting from the RLHF objective &mdash; maximise expected reward minus KL divergence from the reference policy:</p>
+
+    <div class="canvas-wrap">
+        <svg viewBox="0 0 700 200" width="700" height="200" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .d-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #e6edf3; }
+                .d-acc { fill: #76B900; font-weight: 700; }
+                .d-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+                .d-step { fill: #8b949e; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+            </style>
+            <text x="30" y="35" class="d-eq">Objective: max E[r(x,y)] &minus; &beta; KL(&pi;</text>
+            <text x="330" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="340" y="35" class="d-eq"> || &pi;</text>
+            <text x="374" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="392" y="35" class="d-eq">)</text>
+            <text x="30" y="65" class="d-step">Step 1: The closed-form optimal policy is:</text>
+            <text x="30" y="90" class="d-eq">&pi;*(y|x) = (1/Z(x)) &middot; &pi;</text>
+            <text x="228" y="97" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="248" y="90" class="d-eq">(y|x) &middot; exp(r(x,y) / &beta;)</text>
+            <text x="30" y="120" class="d-step">Step 2: Rearrange to express r(x,y) in terms of &pi;* and &pi;_ref:</text>
+            <text x="30" y="145" class="d-eq d-acc">r(x,y) = &beta; log(&pi;*(y|x) / &pi;</text>
+            <text x="295" y="152" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#76B900">ref</text>
+            <text x="315" y="145" class="d-eq d-acc">(y|x)) + &beta; log Z(x)</text>
+            <text x="30" y="175" class="d-step">Step 3: Substitute into Bradley-Terry; log Z(x) cancels in the preference difference</text>
+            <text x="30" y="195" class="d-step">&rarr; DPO loss depends only on log-ratios: no reward model, no partition function</text>
+        </svg>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">The key cancellation</div>
+        <p>The normalisation constant Z(x) = &sum;<sub>y</sub> &pi;<sub>ref</sub>(y|x) exp(r(x,y)/&beta;) is intractable to compute &mdash; but when you subtract the implicit reward of the winner from the implicit reward of the loser (as the Bradley-Terry model does), Z(x) cancels exactly. This is why DPO works without ever computing or sampling from the partition function.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-03">
+    <div class="slide-number">03</div>
+    <h2>DPO Loss, Beta, Positive/Negative Pairs</h2>
+    <p>The DPO training objective is a binary cross-entropy over the log-ratio of policy probabilities relative to the reference, applied to pairwise preference data:</p>
+
+    <div class="canvas-wrap">
+        <svg viewBox="0 0 700 90" width="700" height="90" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .l-eq { font-family: 'JetBrains Mono', monospace; font-size: 13px; fill: #e6edf3; }
+                .l-acc { fill: #76B900; font-weight: 700; }
+                .l-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+            </style>
+            <text x="30" y="35" class="l-eq">L</text>
+            <text x="45" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">DPO</text>
+            <text x="78" y="35" class="l-eq">= &minus;log &sigma;(&beta; &middot; [log(&pi;</text>
+            <text x="282" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="293" y="35" class="l-eq">(y</text>
+            <text x="316" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">w</text>
+            <text x="325" y="35" class="l-eq">|x) / &pi;</text>
+            <text x="383" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="403" y="35" class="l-eq">(y</text>
+            <text x="426" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">w</text>
+            <text x="435" y="35" class="l-eq">|x)] &minus; [log(&pi;</text>
+            <text x="549" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="560" y="35" class="l-eq">(y</text>
+            <text x="583" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">l</text>
+            <text x="589" y="35" class="l-eq">|x) / &pi;</text>
+            <text x="647" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="667" y="35" class="l-eq">)])</text>
+            <text x="30" y="70" class="l-ann">&beta; controls how strongly the model diverges from &pi;_ref: higher &beta; = more conservative. Typical range: 0.01&ndash;0.5</text>
+        </svg>
+    </div>
+
+    <div class="code-block">
+        <div class="code-header">TRL DPOTrainer &mdash; minimal setup</div>
+<pre><code><span class="kw">from</span> trl <span class="kw">import</span> <span class="type">DPOTrainer</span>, <span class="type">DPOConfig</span>
+
+training_args = <span class="type">DPOConfig</span>(
+    beta=<span class="num">0.1</span>,
+    loss_type=<span class="str">"sigmoid"</span>,     <span class="cm"># "sigmoid" (DPO), "ipo", "kto_pair", "robust"</span>
+    label_smoothing=<span class="num">0.0</span>,    <span class="cm"># &gt;0 reduces overconfidence on easy pairs</span>
+    max_length=<span class="num">2048</span>,
+    max_prompt_length=<span class="num">512</span>,
+    per_device_train_batch_size=<span class="num">4</span>,
+    gradient_accumulation_steps=<span class="num">8</span>,
+    learning_rate=<span class="num">5e-7</span>,     <span class="cm"># DPO needs lower LR than SFT; 1e-6&ndash;5e-7</span>
+)
+
+<span class="cm"># dataset must have columns: "prompt", "chosen", "rejected"</span>
+trainer = <span class="type">DPOTrainer</span>(
+    model=model,
+    ref_model=ref_model,    <span class="cm"># or None to use the model's own frozen copy</span>
+    args=training_args,
+    train_dataset=dataset,
+)</code></pre>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">Label smoothing and length normalisation</div>
+        <p>Set <code>label_smoothing=0.1</code> to reduce overconfidence on clear-cut pairs. Enable <code>length_normalization=True</code> in DPOConfig (&ge;0.12) to normalise log-probabilities by sequence length &mdash; this prevents the loss from being dominated by long completions and is particularly important when your chosen/rejected pairs have very different lengths.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-04">
+    <div class="slide-number">04</div>
+    <h2>IPO &mdash; Fixing Preference Saturation</h2>
+    <p>Azar et al. (2023) &mdash; <em>A General Theoretical Paradigm to Understand Learning from Human Feedback</em> &mdash; identified a subtle failure mode in DPO: the sigmoid in the DPO loss saturates when the margin between chosen and rejected log-probabilities becomes very large. Once the model is very confident in a preference direction, the gradient vanishes and learning stalls.</p>
+
+    <p>IPO (Identity Preference Optimisation) replaces the sigmoid with an <strong>identity link</strong> (squared loss), preventing saturation:</p>
+
+    <div class="canvas-wrap">
+        <svg viewBox="0 0 700 80" width="700" height="80" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .ip { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #e6edf3; }
+                .ipacc { fill: #76B900; font-weight: 700; }
+                .ipann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+            </style>
+            <text x="30" y="30" class="ip">L</text>
+            <text x="45" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">IPO</text>
+            <text x="73" y="30" class="ip"> = (log(&pi;</text>
+            <text x="153" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="164" y="30" class="ip">(y</text>
+            <text x="185" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">w</text>
+            <text x="194" y="30" class="ip">|x) / &pi;</text>
+            <text x="252" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="272" y="30" class="ip">(y</text>
+            <text x="295" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">w</text>
+            <text x="304" y="30" class="ip">|x)) &minus; log(&pi;</text>
+            <text x="415" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="426" y="30" class="ip">(y</text>
+            <text x="449" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">l</text>
+            <text x="455" y="30" class="ip">|x) / &pi;</text>
+            <text x="513" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="533" y="30" class="ip">(y</text>
+            <text x="556" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">l</text>
+            <text x="562" y="30" class="ip">|x)) &minus; </text>
+            <text x="608" y="30" class="ip ipacc">1/(2&beta;)</text>
+            <text x="660" y="30" class="ip">)</text>
+            <text x="665" y="30" class="ip ipacc">&sup2;</text>
+            <text x="30" y="65" class="ipann">Minimises squared deviation from a margin of 1/(2&beta;); gradient never saturates regardless of how large the log-ratio grows</text>
+        </svg>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Property</th><th>DPO</th><th>IPO</th></tr></thead>
+            <tbody>
+                <tr><td>Loss shape</td><td>Logistic (sigmoid)</td><td>Squared (MSE-like)</td></tr>
+                <tr><td>Gradient at high margin</td><td>Vanishes (saturation)</td><td>Never saturates</td></tr>
+                <tr><td>Hyperparameter sensitivity</td><td>Moderate</td><td>More sensitive to &beta;</td></tr>
+                <tr><td>Use when</td><td>Standard preference pairs, moderate-difficulty cases</td><td>Long training, hard/easy pair imbalance, Pareto-diverse preference data</td></tr>
+                <tr><td>TRL loss_type</td><td><code>"sigmoid"</code></td><td><code>"ipo"</code></td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="slide" id="slide-05">
+    <div class="slide-number">05</div>
+    <h2>KTO &mdash; Kahneman-Tversky, No Pairs Needed</h2>
+    <p>Ethayarajh et al. (2023) &mdash; <em>KTO: Model Alignment as Prospect-Theoretic Optimisation</em> &mdash; observed that pairwise preference data is expensive to collect. In practice, annotation platforms produce far more <em>desirability</em> labels ("this response is good/bad") than pairwise comparisons. KTO exploits this.</p>
+
+    <p>KTO models human utility using <strong>Kahneman-Tversky Prospect Theory</strong>: humans are loss-averse &mdash; they feel the pain of a bad output more than the pleasure of an equivalently good one. The loss function encodes this asymmetry:</p>
+
+    <div class="code-block">
+        <div class="code-header">KTO loss (conceptual) &mdash; no pairs needed</div>
+<pre><code><span class="cm"># For a desirable response y_w (label = 1):</span>
+<span class="cm"># Maximise: v(r(x, y_w) - z_ref)   where v is the utility of gains</span>
+<span class="cm"># For an undesirable response y_l (label = 0):</span>
+<span class="cm"># Minimise: -v(z_ref - r(x, y_l))  where v is the utility of losses</span>
+
+<span class="cm"># v is the value function (concave gains, convex losses):</span>
+<span class="cm"># v(x) = log(1 + exp(x)) for gains</span>
+<span class="cm"># v(x) = -lambda * log(1 + exp(-x)) for losses (lambda > 1 encodes loss aversion)</span>
+
+<span class="cm"># z_ref = KL(pi_theta || pi_ref) acts as the reference baseline</span></code></pre>
+    </div>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel accent-border">
+            <h4>KTO advantages</h4>
+            <ul>
+                <li>Works on unpaired good/bad labels &mdash; dataset is much cheaper to collect</li>
+                <li>Good/bad ratio doesn't need to be balanced; typically 1:1 to 3:1 good:bad works</li>
+                <li>Loss-aversion weight &lambda; provides a principled knob for helpfulness vs safety balance</li>
+                <li>Often matches DPO quality when paired data is scarce</li>
+            </ul>
+        </div>
+        <div class="diagram-panel accent-border">
+            <h4>KTO disadvantages</h4>
+            <ul>
+                <li>Harder to tune: &lambda;, &beta;, and z_ref interaction is less intuitive than DPO's single &beta;</li>
+                <li>With abundant paired data, DPO typically outperforms KTO</li>
+                <li>Less theoretical clarity on why the Kahneman-Tversky framing transfers to LLMs</li>
+                <li>TRL support added in 0.10; fewer community examples than DPO</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="slide" id="slide-06">
+    <div class="slide-number">06</div>
+    <h2>ORPO &mdash; No Reference Model</h2>
+    <p>Hong et al. (2024) &mdash; <em>ORPO: Monolithic Preference Optimisation without Reference Model</em> &mdash; eliminates the reference model entirely by incorporating the preference objective directly into the SFT loss. Instead of training SFT first then running DPO, ORPO does both in a single pass.</p>
+
+    <div class="canvas-wrap">
+        <svg viewBox="0 0 700 100" width="700" height="100" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .or-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #e6edf3; }
+                .or-acc { fill: #76B900; font-weight: 700; }
+                .or-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+            </style>
+            <text x="30" y="30" class="or-eq">L</text>
+            <text x="45" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ORPO</text>
+            <text x="83" y="30" class="or-eq"> = L</text>
+            <text x="110" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">SFT</text>
+            <text x="134" y="30" class="or-eq"> + &lambda; &middot; L</text>
+            <text x="190" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">OR</text>
+            <text x="30" y="60" class="or-ann">L_SFT = standard NLL on chosen tokens (as in standard SFT)</text>
+            <text x="30" y="78" class="or-ann">L_OR  = &minus;log &sigma; (log(odds(y_w)) &minus; log(odds(y_l)))  &mdash; odds ratio avoids reference model</text>
+            <text x="30" y="96" class="or-ann">Odds ratio = P(y|x) / (1 &minus; P(y|x)) from the current policy &mdash; self-referential, no &pi;_ref needed</text>
+        </svg>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Property</th><th>DPO</th><th>ORPO</th></tr></thead>
+            <tbody>
+                <tr><td>Stages</td><td>2 (SFT then DPO)</td><td>1 (combined)</td></tr>
+                <tr><td>Reference model</td><td>Required (&pi;<sub>SFT</sub>)</td><td>Not needed</td></tr>
+                <tr><td>VRAM</td><td>2 model copies</td><td>1 model copy</td></tr>
+                <tr><td>Data format</td><td>Pairs (chosen, rejected)</td><td>Pairs (chosen, rejected)</td></tr>
+                <tr><td>Training from scratch?</td><td>Requires SFT first</td><td>Can train from base model directly</td></tr>
+                <tr><td>Quality vs DPO</td><td>Slight edge with pre-trained SFT</td><td>Competitive; best when compute budget for 2-stage is unavailable</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">When ORPO shines</div>
+        <p>ORPO is particularly attractive when you're starting from a base model (no instruction-tuned checkpoint available), when your GPU budget can't afford two 7B model copies, or when you want to compress the entire alignment pipeline into a single training run. The &lambda; hyperparameter trades off SFT quality vs preference learning; start at 0.1 and tune.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-07">
+    <div class="slide-number">07</div>
+    <h2>GRPO &mdash; DeepSeek-R1's Group-Relative Variant</h2>
+    <p>DeepSeek-AI (2025) &mdash; <em>DeepSeek-R1: Incentivising Reasoning Capability in LLMs via Reinforcement Learning</em> &mdash; introduced GRPO (Group Relative Policy Optimisation) as a simplified PPO variant that eliminates the separate value network (critic), replacing it with a group-level baseline.</p>
+
+    <h3>How GRPO Differs from PPO</h3>
+    <p>For each prompt x, generate <strong>G completions</strong> {y<sub>1</sub>, &hellip;, y<sub>G</sub>} using the current policy. Score all G with a reward function. The advantage of each completion is:</p>
+
+    <div class="canvas-wrap">
+        <svg viewBox="0 0 700 75" width="700" height="75" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .gr-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #e6edf3; }
+                .gr-acc { fill: #76B900; font-weight: 700; }
+                .gr-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+            </style>
+            <text x="30" y="30" class="gr-eq">A</text>
+            <text x="44" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">i</text>
+            <text x="52" y="30" class="gr-eq"> = (r</text>
+            <text x="93" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">i</text>
+            <text x="102" y="30" class="gr-eq"> &minus; mean(r)) / std(r)   &mdash;   over G completions for the same prompt</text>
+            <text x="30" y="60" class="gr-ann">No critic network needed: the group mean acts as the value baseline. G = 4&ndash;8 typical. Reward r_i from verifier (math/code) or RM.</text>
+        </svg>
+    </div>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel accent-border">
+            <h4>GRPO eliminates</h4>
+            <ul>
+                <li>Separate value/critic network (saves ~50 % VRAM vs PPO)</li>
+                <li>Generalised Advantage Estimation (GAE) bookkeeping</li>
+                <li>Critic loss term in the objective</li>
+            </ul>
+        </div>
+        <div class="diagram-panel accent-border">
+            <h4>GRPO requires</h4>
+            <ul>
+                <li>G&ge;4 rollouts per prompt (increased generation cost)</li>
+                <li>A reliable per-completion reward signal (verifiable tasks work best)</li>
+                <li>Rule-based or verifier rewards; RM still optional but common</li>
+                <li>Format reward (DeepSeek-R1 used explicit &lt;think&gt; chain reward)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">DeepSeek-R1 reward design</div>
+        <p>DeepSeek-R1 used two reward signals: <strong>accuracy reward</strong> (0 or 1 based on whether the final answer matched ground truth for math/code), and <strong>format reward</strong> (positive for correct use of <code>&lt;think&gt;...&lt;/think&gt;</code> chain-of-thought markers, negative for empty or malformed thinking sections). No neural reward model was used &mdash; demonstrating that with a verifiable task, GRPO + rule-based rewards can achieve reasoning capability surpassing earlier RLHF-trained models.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-08">
+    <div class="slide-number">08</div>
+    <h2>Choosing &mdash; Decision Tree</h2>
+    <p>The algorithm landscape can be confusing. This decision tree covers the majority of real-world use cases.</p>
+
+    <div class="diagram-vertical">
+        <div class="diagram-box accent">Do you have a verifiable reward signal? (math, code, formal verification)</div>
+        <div class="diagram-arrow">&darr;</div>
+        <div class="diagram-box">YES &rarr; <strong>GRPO</strong> (no critic, no RM needed) &mdash; or PPO if you want GAE stability</div>
+        <div class="diagram-arrow">&darr;</div>
+        <div class="diagram-box accent">Do you have pairwise preference data (chosen, rejected)?</div>
+        <div class="diagram-arrow">&darr;</div>
+        <div class="diagram-box">YES, and GPU budget allows 2 models &rarr; <strong>DPO</strong> (simplest, well-supported in TRL)</div>
+        <div class="diagram-arrow">&darr;</div>
+        <div class="diagram-box">YES, but only 1 GPU model copy budget &rarr; <strong>ORPO</strong> (no reference model)</div>
+        <div class="diagram-arrow">&darr;</div>
+        <div class="diagram-box accent">Do you only have good/bad labels (no pairs)?</div>
+        <div class="diagram-arrow">&darr;</div>
+        <div class="diagram-box">YES &rarr; <strong>KTO</strong> (no pairs needed, prospect-theoretic loss)</div>
+        <div class="diagram-arrow">&darr;</div>
+        <div class="diagram-box">Long training or hard/easy pair imbalance? &rarr; <strong>IPO</strong> over DPO (no saturation)</div>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">Practical starting point</div>
+        <p>For most teams with a standard instruction-following alignment task: start with DPO using TRL's <code>DPOTrainer</code>, &beta;=0.1, 1&ndash;3 epochs, learning rate 5e-7. If you observe the model ignoring the preference signal (log-ratio near zero throughout training), switch to IPO. If you're compute-constrained or fine-tuning from a base model, try ORPO. Save GRPO for tasks where you have verifiable ground truth.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-09">
+    <div class="slide-number">09</div>
+    <h2>What to Take Away</h2>
+    <ul>
+        <li><strong>DPO is PPO without the reward model and rollouts.</strong> The derivation shows the optimal RLHF policy implicitly encodes the reward &mdash; you can optimise directly from preference pairs. Half the VRAM, two-thirds the training stages.</li>
+        <li><strong>The DPO &beta; is a KL budget.</strong> Higher &beta; = closer to reference policy = more conservative. Start at 0.1; lower if the model barely moves, raise if it diverges from the reference too fast.</li>
+        <li><strong>IPO fixes DPO's saturation problem</strong> by using squared loss instead of sigmoid. Switch to IPO if your training data contains many easy/hard pairs or if DPO loss curves plateau early.</li>
+        <li><strong>KTO works on unpaired labels.</strong> If your annotation pipeline produces "thumbs up / thumbs down" rather than ranked pairs, KTO is usually preferable to constructing artificial pairs.</li>
+        <li><strong>ORPO collapses SFT + preference alignment into one stage.</strong> No reference model, no two-stage pipeline. Use when GPU budget is tight or when fine-tuning from a base model.</li>
+        <li><strong>GRPO replaces the PPO critic with a group-mean baseline.</strong> Requires multiple rollouts per prompt but saves &asymp;50 % VRAM vs PPO. Particularly powerful with verifiable rewards (DeepSeek-R1 precedent).</li>
+    </ul>
+
+    <div class="callout">
+        <div class="callout-label">Where to next</div>
+        <p>Deck 05 covers Constitutional AI and RLAIF &mdash; Anthropic's approach to replacing expensive human preference labels with an AI model following a written constitution of principles. This is the technique behind Claude's training and the Harmless/Helpful/Honest balance.</p>
+    </div>
+</section>
+
+<footer class="footer">
+    <p>Part of the <a href="https://github.com/BrendanJamesLynskey/LLM_Hub_Fine_Tuning">Fine-Tuning &amp; PEFT Series</a></p>
+    <p style="margin-top: 0.5rem; font-size: 0.8rem;"><a href="https://github.com/BrendanJamesLynskey/LLM_Hub_Fine_Tuning">Back to Series Index</a></p>
+</footer>
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.slide').forEach(slide => {
+        slide.style.opacity = '0';
+        slide.style.transform = 'translateY(30px)';
+        slide.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(slide);
+    });
+</script>
+</body>
+</html>
