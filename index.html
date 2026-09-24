@@ -9,15 +9,15 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0a;
-            --bg-card: #0d1117;
-            --bg-code: #161b22;
-            --text-primary: #e6edf3;
-            --text-secondary: #8b949e;
-            --accent: #76B900;
-            --accent-dim: #76B90044;
-            --accent-glow: #76B90033;
-            --border: #21262d;
+            --bg-primary: #0f2027;
+            --bg-card: #13272f;
+            --bg-code: #182f38;
+            --text-primary: #ede7dd;
+            --text-secondary: #8ca5a9;
+            --accent: #83c395;
+            --accent-dim: #83c39544;
+            --accent-glow: #83c39533;
+            --border: #23404a;
             --font-display: 'Space Grotesk', sans-serif;
             --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
             --font-body: 'Inter', sans-serif;
@@ -165,7 +165,7 @@
             border: 1px solid var(--border);
             padding: 0.05rem 0.35rem;
             border-radius: 3px;
-            color: #c9d1d9;
+            color: #cfd7d1;
         }
         .code-block {
             background: var(--bg-code);
@@ -178,7 +178,7 @@
             font-family: var(--font-mono);
             font-size: 0.75rem;
             color: var(--accent);
-            background: rgba(118, 185, 0, 0.08);
+            background: rgba(131,195,149,0.08);
             padding: 0.4rem 1rem;
             border-bottom: 1px solid var(--border);
         }
@@ -187,19 +187,19 @@
             font-family: var(--font-mono);
             font-size: 0.85rem;
             line-height: 1.6;
-            color: #c9d1d9;
+            color: #cfd7d1;
             background: transparent;
             border: none;
             padding: 0;
         }
-        .kw { color: #ff7b72; }
-        .fn { color: #d2a8ff; }
-        .str { color: #a5d6ff; }
-        .cm { color: #8b949e; font-style: italic; }
-        .num { color: #79c0ff; }
-        .type { color: #ffa657; }
-        .dir { color: #ff7b72; }
-        .mac { color: #ffa657; }
+        .kw { color: #f48f70; }
+        .fn { color: #d4c0ea; }
+        .str { color: #c3dbea; }
+        .cm { color: #8ca5a9; font-style: italic; }
+        .num { color: #a8cee8; }
+        .type { color: #eac48b; }
+        .dir { color: #f48f70; }
+        .mac { color: #eac48b; }
         .table-wrap {
             overflow-x: auto;
             margin: 1.25rem 0;
@@ -223,7 +223,7 @@
             color: var(--text-secondary);
         }
         tr:last-child td { border-bottom: none; }
-        tr:nth-child(even) td { background: rgba(13, 17, 23, 0.5); }
+        tr:nth-child(even) td { background: rgba(19,39,47,0.5); }
         .diagram-flow {
             display: flex;
             flex-wrap: wrap;
@@ -247,7 +247,7 @@
             text-align: center;
             white-space: nowrap;
         }
-        .diagram-box.accent { border-color: var(--accent); color: var(--accent); background: rgba(118, 185, 0, 0.08); }
+        .diagram-box.accent { border-color: var(--accent); color: var(--accent); background: rgba(131,195,149,0.08); }
         .diagram-box.dim { color: var(--text-secondary); border-color: var(--border); }
         .diagram-arrow { color: var(--accent); font-size: 1.3rem; font-weight: 700; }
         .diagram-vertical {
@@ -290,7 +290,7 @@
             border: 1px solid var(--border);
             color: var(--text-secondary);
         }
-        .hierarchy-item.accent { border-color: var(--accent); color: var(--accent); background: rgba(118, 185, 0, 0.08); }
+        .hierarchy-item.accent { border-color: var(--accent); color: var(--accent); background: rgba(131,195,149,0.08); }
         .diagram-grid {
             display: grid;
             gap: 0.75rem;
@@ -384,8 +384,8 @@
             margin-left: 0.3rem;
         }
         .badge.ok    { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-        .badge.warn  { border-color: #ffa657; color: #ffa657; background: rgba(255,166,87,0.08); }
-        .badge.bad   { border-color: #ff7b72; color: #ff7b72; background: rgba(255,123,114,0.08); }
+        .badge.warn  { border-color: #eac48b; color: #eac48b; background: rgba(234,196,139,0.08); }
+        .badge.bad   { border-color: #f48f70; color: #f48f70; background: rgba(244,143,112,0.08); }
         @media (max-width: 640px) {
             .slide { padding: 3rem 1rem; min-height: auto; }
             .slide-number { font-size: 3rem; top: 1.5rem; right: 1rem; }
@@ -486,23 +486,23 @@
     <div class="canvas-wrap">
         <svg viewBox="0 0 700 200" width="700" height="200" xmlns="http://www.w3.org/2000/svg">
             <style>
-                .d-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #e6edf3; }
-                .d-acc { fill: #76B900; font-weight: 700; }
-                .d-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
-                .d-step { fill: #8b949e; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+                .d-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #ede7dd; }
+                .d-acc { fill: #83c395; font-weight: 700; }
+                .d-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8ca5a9; }
+                .d-step { fill: #8ca5a9; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
             </style>
             <text x="30" y="35" class="d-eq">Objective: max E[r(x,y)] &minus; &beta; KL(&pi;</text>
-            <text x="330" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="330" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">&theta;</text>
             <text x="340" y="35" class="d-eq"> || &pi;</text>
-            <text x="374" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="374" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">ref</text>
             <text x="392" y="35" class="d-eq">)</text>
             <text x="30" y="65" class="d-step">Step 1: The closed-form optimal policy is:</text>
             <text x="30" y="90" class="d-eq">&pi;*(y|x) = (1/Z(x)) &middot; &pi;</text>
-            <text x="228" y="97" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="228" y="97" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">ref</text>
             <text x="248" y="90" class="d-eq">(y|x) &middot; exp(r(x,y) / &beta;)</text>
             <text x="30" y="120" class="d-step">Step 2: Rearrange to express r(x,y) in terms of &pi;* and &pi;_ref:</text>
             <text x="30" y="145" class="d-eq d-acc">r(x,y) = &beta; log(&pi;*(y|x) / &pi;</text>
-            <text x="295" y="152" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#76B900">ref</text>
+            <text x="295" y="152" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#83c395">ref</text>
             <text x="315" y="145" class="d-eq d-acc">(y|x)) + &beta; log Z(x)</text>
             <text x="30" y="175" class="d-step">Step 3: Substitute into Bradley-Terry; log Z(x) cancels in the preference difference</text>
             <text x="30" y="195" class="d-step">&rarr; DPO loss depends only on log-ratios: no reward model, no partition function</text>
@@ -523,26 +523,26 @@
     <div class="canvas-wrap">
         <svg viewBox="0 0 700 90" width="700" height="90" xmlns="http://www.w3.org/2000/svg">
             <style>
-                .l-eq { font-family: 'JetBrains Mono', monospace; font-size: 13px; fill: #e6edf3; }
-                .l-acc { fill: #76B900; font-weight: 700; }
-                .l-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+                .l-eq { font-family: 'JetBrains Mono', monospace; font-size: 13px; fill: #ede7dd; }
+                .l-acc { fill: #83c395; font-weight: 700; }
+                .l-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8ca5a9; }
             </style>
             <text x="30" y="35" class="l-eq">L</text>
-            <text x="45" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">DPO</text>
+            <text x="45" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">DPO</text>
             <text x="78" y="35" class="l-eq">= &minus;log &sigma;(&beta; &middot; [log(&pi;</text>
-            <text x="282" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="282" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">&theta;</text>
             <text x="293" y="35" class="l-eq">(y</text>
-            <text x="316" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">w</text>
+            <text x="316" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">w</text>
             <text x="325" y="35" class="l-eq">|x) / &pi;</text>
-            <text x="383" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="383" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">ref</text>
             <text x="403" y="35" class="l-eq">(y</text>
-            <text x="426" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">w</text>
+            <text x="426" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">w</text>
             <text x="435" y="35" class="l-eq">|x)] &minus; [log(&pi;</text>
-            <text x="549" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="549" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">&theta;</text>
             <text x="560" y="35" class="l-eq">(y</text>
-            <text x="583" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">l</text>
+            <text x="583" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">l</text>
             <text x="589" y="35" class="l-eq">|x) / &pi;</text>
-            <text x="647" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="647" y="42" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">ref</text>
             <text x="667" y="35" class="l-eq">)])</text>
             <text x="30" y="70" class="l-ann">&beta; controls how strongly the model diverges from &pi;_ref: higher &beta; = more conservative. Typical range: 0.01&ndash;0.5</text>
         </svg>
@@ -588,28 +588,28 @@ trainer = <span class="type">DPOTrainer</span>(
     <div class="canvas-wrap">
         <svg viewBox="0 0 700 80" width="700" height="80" xmlns="http://www.w3.org/2000/svg">
             <style>
-                .ip { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #e6edf3; }
-                .ipacc { fill: #76B900; font-weight: 700; }
-                .ipann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+                .ip { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #ede7dd; }
+                .ipacc { fill: #83c395; font-weight: 700; }
+                .ipann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8ca5a9; }
             </style>
             <text x="30" y="30" class="ip">L</text>
-            <text x="45" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">IPO</text>
+            <text x="45" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">IPO</text>
             <text x="73" y="30" class="ip"> = (log(&pi;</text>
-            <text x="153" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="153" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">&theta;</text>
             <text x="164" y="30" class="ip">(y</text>
-            <text x="185" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">w</text>
+            <text x="185" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">w</text>
             <text x="194" y="30" class="ip">|x) / &pi;</text>
-            <text x="252" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="252" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">ref</text>
             <text x="272" y="30" class="ip">(y</text>
-            <text x="295" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">w</text>
+            <text x="295" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">w</text>
             <text x="304" y="30" class="ip">|x)) &minus; log(&pi;</text>
-            <text x="415" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">&theta;</text>
+            <text x="415" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">&theta;</text>
             <text x="426" y="30" class="ip">(y</text>
-            <text x="449" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">l</text>
+            <text x="449" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">l</text>
             <text x="455" y="30" class="ip">|x) / &pi;</text>
-            <text x="513" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ref</text>
+            <text x="513" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">ref</text>
             <text x="533" y="30" class="ip">(y</text>
-            <text x="556" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">l</text>
+            <text x="556" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">l</text>
             <text x="562" y="30" class="ip">|x)) &minus; </text>
             <text x="608" y="30" class="ip ipacc">1/(2&beta;)</text>
             <text x="660" y="30" class="ip">)</text>
@@ -683,16 +683,16 @@ trainer = <span class="type">DPOTrainer</span>(
     <div class="canvas-wrap">
         <svg viewBox="0 0 700 100" width="700" height="100" xmlns="http://www.w3.org/2000/svg">
             <style>
-                .or-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #e6edf3; }
-                .or-acc { fill: #76B900; font-weight: 700; }
-                .or-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+                .or-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #ede7dd; }
+                .or-acc { fill: #83c395; font-weight: 700; }
+                .or-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8ca5a9; }
             </style>
             <text x="30" y="30" class="or-eq">L</text>
-            <text x="45" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">ORPO</text>
+            <text x="45" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">ORPO</text>
             <text x="83" y="30" class="or-eq"> = L</text>
-            <text x="110" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">SFT</text>
+            <text x="110" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">SFT</text>
             <text x="134" y="30" class="or-eq"> + &lambda; &middot; L</text>
-            <text x="190" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">OR</text>
+            <text x="190" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">OR</text>
             <text x="30" y="60" class="or-ann">L_SFT = standard NLL on chosen tokens (as in standard SFT)</text>
             <text x="30" y="78" class="or-ann">L_OR  = &minus;log &sigma; (log(odds(y_w)) &minus; log(odds(y_l)))  &mdash; odds ratio avoids reference model</text>
             <text x="30" y="96" class="or-ann">Odds ratio = P(y|x) / (1 &minus; P(y|x)) from the current policy &mdash; self-referential, no &pi;_ref needed</text>
@@ -730,14 +730,14 @@ trainer = <span class="type">DPOTrainer</span>(
     <div class="canvas-wrap">
         <svg viewBox="0 0 700 75" width="700" height="75" xmlns="http://www.w3.org/2000/svg">
             <style>
-                .gr-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #e6edf3; }
-                .gr-acc { fill: #76B900; font-weight: 700; }
-                .gr-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8b949e; }
+                .gr-eq { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #ede7dd; }
+                .gr-acc { fill: #83c395; font-weight: 700; }
+                .gr-ann { font-family: 'Inter', sans-serif; font-size: 11px; fill: #8ca5a9; }
             </style>
             <text x="30" y="30" class="gr-eq">A</text>
-            <text x="44" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">i</text>
+            <text x="44" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">i</text>
             <text x="52" y="30" class="gr-eq"> = (r</text>
-            <text x="93" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8b949e">i</text>
+            <text x="93" y="37" style="font-family:'JetBrains Mono',monospace;font-size:9px;fill:#8ca5a9">i</text>
             <text x="102" y="30" class="gr-eq"> &minus; mean(r)) / std(r)   &mdash;   over G completions for the same prompt</text>
             <text x="30" y="60" class="gr-ann">No critic network needed: the group mean acts as the value baseline. G = 4&ndash;8 typical. Reward r_i from verifier (math/code) or RM.</text>
         </svg>
